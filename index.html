@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DBS PPL</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+</head>
+<body>
+
+    <div id="signin" class="container">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="signin-inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="signin-inputPassword" class="form-control" placeholder="Password" required="">
+        <button class="btn btn-lg btn-primary btn-block submit" type="submit">Sign in</button>
+        <button id="createNewBtn" class="btn btn-lg btn-primary">Create New Account</button>
+      </form>
+
+    </div>
+
+    <div id="signup" class="container">
+
+      <form class="form-signup">
+        <h2 class="form-signup-heading">Create A New Account</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="signup-inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="signup-inputPassword" class="form-control" placeholder="Password" required="">
+        <label for="userName">Your Name</label>
+        <input type="text" id="userName">
+        <button class="btn btn-lg btn-primary btn-block submit" type="submit">Create Account</button>
+      </form>
+
+    </div>
+
+    <div id="addContent" class="container">
+        <form class="form-addContent">
+          <h2 class="form-addContent-heading">Add Content</h2>
+          <label for="number" class="sr-only"></label>
+          <input type="text" id="number" class="form-control" placeholder="" required="">
+          <label for="description">Description</label>
+          <input type="text" id="description">
+          <button class="btn btn-lg btn-primary btn-block submit" type="submit">Add Content</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h2>Message Content for user</h2>
+
+        <div class="content">
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.2.7/firebase.js"></script>
+    <script>
+    var firebase = new Firebase("https://dbs-ppl.firebaseio.com/");
+    firebase.unauth();
+
+    jQuery("#signup").find(".submit").on("click", function(e){
+        e.preventDefault();
+        var email = jQuery("#signup-inputEmail").val();
+        var password = jQuery("#signup-inputPassword").val();
+
+        firebase.createUser({
+          email    : email,
+          password : password
+        }, function(error, userData) {
+            if (error) {
+                console.log("Error creating user:", error);
+            } else {
+                jQuery("body").prepend('<p class="bg-success">Account Created.</p>')
+                jQuery("#signup").fadeOut(1000);
+                jQuery("#signin").fadeIn(1000);
+                console.log("Successfully created user account with uid:", userData);
+                console.dir(userData.uid);
+            }
+        });
+    });
+
+    jQuery("#signin").find(".submit").on("click", function(e){
+        e.preventDefault();
+        var email = jQuery("#signin-inputEmail").val();
+        var password = jQuery("#signin-inputPassword").val();
+
+        firebase.authWithPassword({
+            email    : email,
+            password : password
+        }, function(error, authData) {
+            if (error) {
+                console.log("Login Failed!", error);
+            } else {
+                console.log("Authenticated successfully with payload:", authData);
+                console.dir(authData);
+            }
+        });
+    });
+
+    jQuery("#addContent").find(".submit").on("click", function(e){
+            e.preventDefault();
+            var number = jQuery("#number").val(); ;
+            var description = jQuery("#description").val();
+            var authData = firebase.getAuth();
+
+            var data = {
+                "number": number,
+                "description": description,
+                "date": Firebase.ServerValue.TIMESTAMP,
+                "is_approved": false
+            };
+
+            firebase.child("users/" + authData.uid + "/content" ).push( data );
+    });
+
+
+    // When data is received. Runs only once.
+    firebase.once("value", function(snap){
+        console.log( snap.val() );
+    });
+
+
+    // When on AUTH.
+    firebase.onAuth(function(authData) {
+
+        // Setup new user profile if it doesn't exist.
+        if ( authData && is_new_user( authData.uid ) ) {
+            firebase.child("users").child( authData.uid ).set({
+                provider: authData.provider,
+                name: getName(authData),
+                approvedUser: false,
+                content: { "blank":"blank"}
+            });
+        }
+    });
+
+    // find a suitable name based on the meta info given by each provider
+    function getName(authData) {
+      switch( authData.provider ) {
+         case 'password':
+           return authData.password.email.replace(/@.*/, '');
+      }
+    }
+
+    // Check to see if this is new user.
+    function is_new_user( uid ){
+        var exists = null;
+        firebase.once("value", function(snap){
+            exists = snap.child("users/" + uid ).exists();
+        });
+        return exists;
+    }
+
+
+
+
+    </script>
+
+
+</body>
+</html>

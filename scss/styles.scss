@@ -1,0 +1,206 @@
+* { box-sizing: border-box }
+
+html {
+  background: #88D5E5;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+img {
+  max-width: 100%;
+}
+
+#container {
+  padding-top: 5em;
+  max-width: 700px;
+  //max-width: 400px;
+  margin: 0 auto;
+}
+
+#islands {
+  position: relative;
+}
+
+#island1 {
+  position: relative;
+}
+
+#bridge1 {
+  position: absolute;
+  top: 50%;
+  left: -20%;
+  max-width: 30.5%;
+  animation-name: floatingBridge1;
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+#bridge2 {
+  position: absolute;
+  top: 50%;
+  left: 94%;
+  max-width: 30.5%;
+}
+
+#island2 {
+  /*position: absolute;
+  top: 39%;
+  left: -31%;
+  max-width: 17.5%;*/
+  position: absolute;
+  top: 69%;
+  left: 87%;
+  max-width: 17.5%;
+}
+
+#island3 {
+  /*position: absolute;
+  top: 45%;
+  left: 113.5%;
+  max-width: 37.5%;*/
+  position: absolute;
+  top: 42%;
+  left: -37%;
+  max-width: 37.5%;
+  
+  animation-name: floatingIsland1;
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+#island4 {
+  position: absolute;
+  top: 37.5%;
+  left: 113.5%;
+  max-width: 37.5%;
+}
+
+.ready #board { max-height: 10000px; }
+
+#board {
+  max-width: 80%;
+  margin: 0 auto;
+  margin-bottom: -16.5%;
+  position: relative;
+  z-index: 200;
+  background: #222;
+  color: #fff;
+  text-align: center;
+  border-radius: .5em;
+  border: 2px solid #555;
+  top: -2em;
+  max-height: 0;
+  transition: 2s all;
+  
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 1em;
+    height: 2em;
+    width: .5em;
+    background: #222;
+    z-index: 200;
+  }
+  
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 100%;
+    right: 1em;
+    height: 2em;
+    width: .5em;
+    background: #222;
+    z-index: 200;
+  }
+}
+
+ul {
+  padding: 0;
+  margin: 0 auto;
+  overflow: hidden;
+  text-align: left;
+  
+  li {
+    padding: .75em;
+    border-bottom: 1px solid #555;
+    display: table;
+    width: 100%;
+    border-radius: 3px;
+    
+    .photo {
+      display: table-cell;
+      vertical-align: middle;
+      width: 10%;
+      text-align: center;
+      
+      span {
+        border-radius: 50%;
+        width: 2em;
+        height: 2em;
+        overflow: hidden;
+        display: inline-block;
+      }
+    }
+    .title {
+      display: table-cell;
+      text-align: left;
+      vertical-align: middle;
+      width: 70%;
+      span {
+        opacity: .5;
+        display: block;
+        font-size: .7em;
+      }
+    }
+    .score {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+      width: 20%;
+      font-size: 1.6rem;
+      line-height: 1em;
+      font-family: 'Open Sans Condensed', sans-serif;
+      span {
+        opacity: .5;
+        display: block;
+        font-size: .9rem;
+      }
+    }
+    &.winner {
+      background: #DCAC23;
+      background: #cea120;
+      background: #DCAC23;
+      background: linear-gradient(to bottom, #fcd25b 0%,#cea120 100%);
+      border: 1px solid #060606;
+      color: #222;
+    }
+  }
+}
+
+
+
+
+
+
+
+@keyframes floatingIsland1{
+    from {transform:translate(0, 0%);}
+    65% {transform:translate(0, 15%);}
+    to {transform: translate(0, -0%);}    
+}
+@keyframes floatingBridge1{
+    from {transform:translate(0, 0%);}
+    3% {transform:translate(0, 0%);}
+    30% {transform:translate(0, 10%);}
+    70% {transform:translate(0, 30%);}
+    85% {transform:translate(0, 20%);}
+    95% {transform:translate(0, 3%);}
+    to {transform: translate(0, -0%);}
+}
